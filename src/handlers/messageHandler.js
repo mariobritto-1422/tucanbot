@@ -14,8 +14,11 @@ const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;
  */
 async function sendMessage(instanceKey, waNumber, text) {
   try {
+    // Encode instanceKey para manejar espacios y caracteres especiales
+    const encodedInstanceKey = encodeURIComponent(instanceKey);
+
     const response = await axios.post(
-      `${EVOLUTION_API_URL}/message/sendText/${instanceKey}`,
+      `${EVOLUTION_API_URL}/message/sendText/${encodedInstanceKey}`,
       {
         number: waNumber,
         text: text
