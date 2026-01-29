@@ -297,7 +297,12 @@ async function handleGastronomia(comercio, cliente, mensaje, conversacion) {
           totalCarrito += parseFloat(item.precio);
         });
 
-        mensajeCarrito += `\n💵 Total: $${totalCarrito.toFixed(2)}`;
+        mensajeCarrito += `\n━━━━━━━━━━━━━━━━\n`;
+        mensajeCarrito += `💵 *TOTAL: $${totalCarrito.toFixed(2)}*\n\n`;
+        mensajeCarrito += `¿Qué deseas hacer?\n`;
+        mensajeCarrito += `1️⃣ Agregar más productos\n`;
+        mensajeCarrito += `2️⃣ Finalizar pedido y pagar\n`;
+        mensajeCarrito += `4️⃣ Cancelar pedido`;
 
         await sendMessage(wa_instance_key, waNumber, mensajeCarrito);
         break;
