@@ -235,7 +235,7 @@ app.use((req, res) => {
 /**
  * Iniciar servidor
  */
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log('\n' + '='.repeat(60));
   console.log('🦜 TucánBot SaaS Multi-Comercio');
   console.log('='.repeat(60));
