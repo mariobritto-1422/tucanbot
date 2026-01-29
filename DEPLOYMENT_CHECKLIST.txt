@@ -1,0 +1,186 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║              🚀 CHECKLIST DE DEPLOYMENT EN EASYPANEL                         ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📋 FASE 1: PREPARAR CÓDIGO (5 minutos)
+
+[ ] 1. Abrir GitHub Desktop o ir a github.com/new
+[ ] 2. Crear repositorio "tucanbot" (privado)
+[ ] 3. Subir código desde C:\Users\mario\tucanbot
+[ ] 4. Verificar que se subió correctamente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 2: CREAR SERVICIO EN EASYPANEL (10 minutos)
+
+[ ] 5. Abrir Easypanel (https://panel.tudominio.com)
+[ ] 6. Login
+[ ] 7. Ir a tu proyecto o crear uno nuevo: "TucánBot"
+[ ] 8. Click "Create Service" → "App"
+[ ] 9. Name: tucanbot
+[ ] 10. Conectar GitHub → Seleccionar repo "tucanbot"
+[ ] 11. Build Command: npm install
+[ ] 12. Start Command: npm start
+[ ] 13. Port: 3000
+[ ] 14. Click "Continue"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 3: CONFIGURAR VARIABLES DE ENTORNO (5 minutos)
+
+[ ] 15. Ir a sección "Environment"
+[ ] 16. Agregar variable: PORT = 3000
+[ ] 17. Agregar variable: NODE_ENV = production
+[ ] 18. Agregar variable: SUPABASE_URL = https://fcjtpdkxoqffcmjenaaq.supabase.co
+[ ] 19. Agregar variable: SUPABASE_SERVICE_ROLE_KEY = [la clave larga]
+[ ] 20. Agregar variable: WEBHOOK_SECRET = tucanbot_webhook_secret_2024_secure
+
+⚠️ PENDIENTES (completar después):
+[ ] 21. EVOLUTION_API_URL = [Obtener de Evolution en Easypanel]
+[ ] 22. EVOLUTION_API_KEY = [Obtener de Evolution en Easypanel]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 4: OBTENER DATOS DE EVOLUTION API (5 minutos)
+
+[ ] 23. En Easypanel, ir a servicio "Evolution API"
+[ ] 24. Copiar URL (Domains) → Ejemplo: https://evolution.tudominio.com
+[ ] 25. Ver variables de entorno de Evolution
+[ ] 26. Copiar valor de: AUTHENTICATION_API_KEY
+[ ] 27. Volver al servicio TucánBot
+[ ] 28. Completar variable: EVOLUTION_API_URL = [URL copiada]
+[ ] 29. Completar variable: EVOLUTION_API_KEY = [API Key copiada]
+[ ] 30. Guardar cambios
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 5: DEPLOYAR (2 minutos)
+
+[ ] 31. En servicio TucánBot, click "Deploy"
+[ ] 32. Esperar logs (1-2 minutos)
+[ ] 33. Verificar que termina con: "Servidor escuchando en puerto: 3000"
+[ ] 34. Ir a sección "Domains"
+[ ] 35. Copiar URL → Ejemplo: https://tucanbot.tudominio.com
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 6: PROBAR HEALTH CHECK (1 minuto)
+
+[ ] 36. Abrir en navegador: https://tucanbot.tudominio.com/health
+[ ] 37. Debe mostrar: {"success": true, "status": "healthy"}
+
+✅ Si funciona, TucánBot está ONLINE!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 7: CREAR INSTANCIA DE WHATSAPP (5 minutos)
+
+OPCIÓN A - Con interfaz web de Evolution:
+[ ] 38. Abrir Evolution: https://evolution.tudominio.com
+[ ] 39. Ir a "Instances"
+[ ] 40. Click "Create Instance"
+[ ] 41. Name: tucanbot-pizzeria
+[ ] 42. Guardar
+[ ] 43. Aparece QR → Escanear con WhatsApp
+[ ] 44. Verificar que diga "Connected"
+
+OPCIÓN B - Con curl (si no tenés interfaz):
+[ ] 38. Abrir terminal
+[ ] 39. Ejecutar:
+        curl -X POST "https://evolution.tudominio.com/instance/create" \
+          -H "apikey: TU_API_KEY" \
+          -d '{"instanceName": "tucanbot-pizzeria"}'
+[ ] 40. Copiar el QR code (base64)
+[ ] 41. Decodificarlo en: https://base64.guru/converter/decode/image
+[ ] 42. Escanear con WhatsApp
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 8: CONFIGURAR WEBHOOK (3 minutos)
+
+OPCIÓN A - Con interfaz de Evolution:
+[ ] 45. En Evolution, ir a instancia "tucanbot-pizzeria"
+[ ] 46. Sección "Webhook"
+[ ] 47. URL: https://tucanbot.tudominio.com/webhook
+[ ] 48. Events: Marcar MESSAGES_UPSERT
+[ ] 49. Headers: x-api-key = tucanbot_webhook_secret_2024_secure
+[ ] 50. Guardar
+
+OPCIÓN B - Con curl:
+[ ] 45. Ejecutar:
+        curl -X POST "https://evolution.tudominio.com/webhook/set/tucanbot-pizzeria" \
+          -H "apikey: TU_API_KEY" \
+          -d '{
+            "url": "https://tucanbot.tudominio.com/webhook",
+            "events": ["MESSAGES_UPSERT"],
+            "headers": {"x-api-key": "tucanbot_webhook_secret_2024_secure"}
+          }'
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 9: ¡PROBAR! (2 minutos)
+
+[ ] 51. Desde OTRO celular, enviar WhatsApp al número conectado
+[ ] 52. Escribir: hola
+[ ] 53. Debe responder con el menú de Pizzería Don Tucán
+[ ] 54. Probar navegación: escribir 1 (para Pizzas)
+[ ] 55. Debe mostrar lista de pizzas
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 FASE 10: VERIFICAR TODO FUNCIONA (3 minutos)
+
+[ ] 56. Ver logs en Easypanel → TucánBot → Logs
+        Debe mostrar: "Mensaje procesado exitosamente"
+
+[ ] 57. Ver Supabase → mensajes_log
+        Debe aparecer el mensaje "hola"
+
+[ ] 58. Ver Supabase → clientes_finales
+        Debe aparecer el cliente nuevo
+
+[ ] 59. Ver Supabase → conversaciones
+        Debe aparecer conversación activa
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ COMPLETADO
+
+Si llegaste hasta acá y todo funciona:
+
+🎉 ¡TUCANBOT ESTÁ EN PRODUCCIÓN!
+
+Funcionando 24/7 en tu servidor.
+Listo para conseguir clientes.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🆘 SI ALGO FALLA
+
+Ver archivo: README_DEPLOYMENT.md (sección Troubleshooting)
+
+O revisar:
+- Logs de TucánBot en Easypanel
+- Logs de Evolution API
+- Variables de entorno
+- Configuración del webhook
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📝 DATOS IMPORTANTES PARA GUARDAR
+
+URL TucánBot: _______________________________________
+
+URL Evolution: _______________________________________
+
+Instance Name: tucanbot-pizzeria
+
+API Key Evolution: _______________________________________
+
+Webhook Secret: tucanbot_webhook_secret_2024_secure
+
+Número WhatsApp conectado: _______________________________________
+
+═══════════════════════════════════════════════════════════════════════════════

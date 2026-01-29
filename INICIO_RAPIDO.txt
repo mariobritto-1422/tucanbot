@@ -1,0 +1,197 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                        🦜 TUCANBOT - INICIO RÁPIDO                          ║
+║                                                                              ║
+║               Sistema SaaS para WhatsApp con Evolution API                  ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📋 PASOS PARA EMPEZAR (5 MINUTOS)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. INSTALAR DEPENDENCIAS                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   cd tucanbot
+   npm install
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 2. CONFIGURAR VARIABLES DE ENTORNO                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   cp .env.example .env
+
+   Editar .env:
+
+   SUPABASE_URL=https://tu-proyecto.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=eyJ...
+   EVOLUTION_API_URL=https://tu-evolution-api.com
+   EVOLUTION_API_KEY=tu_api_key
+   WEBHOOK_SECRET=secreto_seguro_aleatorio
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 3. CREAR TABLAS EN SUPABASE                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Ir a https://supabase.com → Tu proyecto → SQL Editor
+   2. Copiar contenido de: src/database/migrations/003_schema_multicomercio.sql
+   3. Pegar y ejecutar (RUN)
+   4. Verificar que se crearon las tablas
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 4. INSERTAR TU PRIMER COMERCIO                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   En SQL Editor de Supabase:
+
+   INSERT INTO comercios (
+       nombre_fantasia,
+       rubro,
+       plan_id,
+       wa_instance_key,
+       wa_number,
+       mensaje_bienvenida
+   ) VALUES (
+       'Mi Pizzería',
+       'gastronomia',
+       (SELECT id FROM planes WHERE nombre = 'Selva'),
+       'mi-pizzeria-bot',
+       '+5491112345678',
+       '¡Hola! 🍕 Bienvenido a {{nombre}}.'
+   );
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 5. AGREGAR CATEGORÍAS Y PRODUCTOS                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   -- Categoría
+   INSERT INTO categorias (comercio_id, nombre)
+   VALUES (
+       (SELECT id FROM comercios WHERE wa_instance_key = 'mi-pizzeria-bot'),
+       'Pizzas'
+   );
+
+   -- Producto
+   INSERT INTO productos (
+       comercio_id,
+       categoria_id,
+       nombre,
+       precio,
+       stock_disponible
+   ) VALUES (
+       (SELECT id FROM comercios WHERE wa_instance_key = 'mi-pizzeria-bot'),
+       (SELECT id FROM categorias WHERE nombre = 'Pizzas' LIMIT 1),
+       'Muzzarella',
+       2500.00,
+       true
+   );
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 6. INICIAR TUCANBOT                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   npm start
+
+   Deberías ver:
+
+   ============================================================
+   🦜 TucánBot SaaS Multi-Comercio
+   ============================================================
+   🌐 Servidor escuchando en puerto: 3000
+   🔗 Webhook URL: http://localhost:3000/webhook
+   ============================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 7. CONFIGURAR EVOLUTION API                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   A. Crear instancia:
+
+      curl -X POST https://tu-evolution-api.com/instance/create \
+        -H "apikey: TU_API_KEY" \
+        -d '{"instanceName": "mi-pizzeria-bot"}'
+
+   B. Escanear QR con WhatsApp
+
+   C. Configurar webhook:
+
+      curl -X POST https://tu-evolution-api.com/webhook/set/mi-pizzeria-bot \
+        -H "apikey: TU_API_KEY" \
+        -d '{
+          "url": "https://tu-dominio.com/webhook",
+          "events": ["MESSAGES_UPSERT"],
+          "headers": {"x-api-key": "TU_WEBHOOK_SECRET"}
+        }'
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 8. PROBAR (Sin WhatsApp real)                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   node test-webhook.js mi-pizzeria-bot 5491112345678 "hola"
+
+   Revisa la consola de TucánBot para ver el procesamiento.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 9. EXPONER CON NGROK (Para testing con WhatsApp real)                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Terminal 1:
+   npm start
+
+   Terminal 2:
+   ngrok http 3000
+
+   Copiar URL HTTPS (ej: https://abc123.ngrok.io)
+   Actualizar webhook en Evolution API con esa URL + /webhook
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 10. ¡PROBAR CON WHATSAPP REAL!                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Envía "hola" al número de WhatsApp que conectaste.
+   El bot debería responder con el menú.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔍 VERIFICAR QUE TODO FUNCIONA
+
+   ✓ Health check:
+     curl http://localhost:3000/health
+
+   ✓ Ver logs:
+     Revisar consola donde corre TucánBot
+
+   ✓ Ver datos en Supabase:
+     SELECT * FROM mensajes_log ORDER BY created_at DESC LIMIT 10;
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTACIÓN COMPLETA
+
+   README_SIMPLE.md          → Guía completa paso a paso
+   RESUMEN_PROYECTO.md       → Resumen de todo el proyecto
+   ESTRUCTURA.md             → Arquitectura del código
+   EVOLUTION_API_SETUP.md    → Configuración de Evolution API
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🆘 TROUBLESHOOTING
+
+   Problema: "Comercio no encontrado"
+   → Verificar wa_instance_key en Supabase = instanceName en Evolution API
+
+   Problema: "No autorizado"
+   → Verificar que WEBHOOK_SECRET coincide en .env y Evolution API
+
+   Problema: Bot no responde
+   → Ver logs en consola
+   → Verificar credenciales en .env
+   → Probar health check
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎉 ¡LISTO!
+
+Tu TucánBot está funcionando y listo para recibir mensajes de WhatsApp.
+
+═══════════════════════════════════════════════════════════════════════════════

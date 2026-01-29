@@ -1,0 +1,153 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                    🦜 TUCANBOT - PASOS DE CONFIGURACIÓN                      ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+✅ PASO 1: SUPABASE YA ESTÁ CONFIGURADO
+
+   Tu archivo .env ya tiene las credenciales de Supabase:
+   - URL: https://fcjtpdkxoqffcmjenaaq.supabase.co
+   - Service Role Key: Configurada ✓
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 PASO 2: EJECUTAR SQL EN SUPABASE
+
+   1. Ir a: https://fcjtpdkxoqffcmjenaaq.supabase.co
+
+   2. Login con tu cuenta
+
+   3. Click en "SQL Editor" (menú izquierdo)
+
+   4. Click en "New Query"
+
+   5. Abrir el archivo: EJECUTAR_EN_SUPABASE.sql
+
+   6. COPIAR TODO el contenido del archivo
+
+   7. PEGAR en el editor de Supabase
+
+   8. Click en "RUN" (botón verde abajo a la derecha)
+
+   9. Esperar unos segundos... Deberías ver:
+      ✓ 3 planes creados
+      ✓ 1 comercio creado (Pizzería Don Tucán)
+      ✓ 3 categorías creadas
+      ✓ 7 productos creados
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 PASO 3: INSTALAR DEPENDENCIAS
+
+   Abrir terminal en la carpeta tucanbot:
+
+   npm install
+
+═══════════════════════════════════════════════════════════════════════════════
+
+▶️ PASO 4: INICIAR TUCANBOT
+
+   npm start
+
+   Deberías ver:
+
+   ============================================================
+   🦜 TucánBot SaaS Multi-Comercio
+   ============================================================
+   🌐 Servidor escuchando en puerto: 3000
+   🔗 Webhook URL: http://localhost:3000/webhook
+   ============================================================
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 PASO 5: PROBAR (Sin necesidad de WhatsApp todavía)
+
+   Abrir OTRA terminal y ejecutar:
+
+   node test-webhook.js tucanbot-pizzeria 5491112345678 "hola"
+
+   En la terminal de TucánBot deberías ver:
+
+   📥 Webhook recibido de instancia: tucanbot-pizzeria
+   📨 Mensaje de: 5491112345678
+   💬 Contenido: hola
+   🏪 Comercio: Pizzería Don Tucán (gastronomia)
+   ✅ Nuevo cliente creado: 5491112345678
+   👤 Cliente: Cliente 5678
+   📤 Mensaje enviado a 5491112345678
+   ✅ Mensaje procesado exitosamente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔍 PASO 6: VERIFICAR EN SUPABASE
+
+   1. Ir a: https://fcjtpdkxoqffcmjenaaq.supabase.co
+
+   2. Click en "Table Editor"
+
+   3. Ver tabla "mensajes_log":
+      - Debería aparecer el mensaje "hola" que enviaste
+
+   4. Ver tabla "clientes_finales":
+      - Debería aparecer el cliente 5491112345678
+
+   5. Ver tabla "conversaciones":
+      - Debería aparecer una conversación activa
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📱 PRÓXIMO PASO: CONECTAR EVOLUTION API
+
+   Cuando tengas Evolution API configurada:
+
+   1. Editar .env:
+      EVOLUTION_API_URL=https://tu-evolution-api.com
+      EVOLUTION_API_KEY=tu_api_key
+
+   2. Crear instancia en Evolution API con nombre: tucanbot-pizzeria
+
+   3. Configurar webhook apuntando a tu TucánBot
+
+   4. ¡Listo! Empezarás a recibir mensajes de WhatsApp real
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ IMPORTANTE - SEGURIDAD
+
+   1. NO compartir públicamente:
+      - Service Role Key
+      - Evolution API Key
+      - WEBHOOK_SECRET
+
+   2. Cambiar WEBHOOK_SECRET en .env por algo más seguro:
+      Puedes generar uno con: openssl rand -hex 32
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST
+
+   [ ] SQL ejecutado en Supabase
+   [ ] npm install ejecutado
+   [ ] npm start funcionando
+   [ ] test-webhook.js probado exitosamente
+   [ ] Datos verificados en Supabase
+   [ ] Evolution API configurada (opcional por ahora)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🆘 SI ALGO FALLA
+
+   1. Verificar que el SQL se ejecutó completo en Supabase
+   2. Verificar que npm install terminó sin errores
+   3. Ver logs en la terminal donde corre npm start
+   4. Verificar que .env tiene las credenciales correctas
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎉 ¡TODO LISTO!
+
+Una vez completados los pasos 1-5, tu TucánBot está funcionando localmente
+y puede procesar mensajes (aunque todavía no esté conectado a WhatsApp real).
+
+═══════════════════════════════════════════════════════════════════════════════
